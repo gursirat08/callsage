@@ -21,6 +21,9 @@ def call_model(prompt, model="anthropic/claude-instant-v1"):
                                      "Content-Type": "application/json"
                                  }, 
                                  json=data)
+        if not response.ok:
+    st.error(response.text)
+
         response.raise_for_status()
         return response.json()["choices"][0]["message"]["content"], model
     except requests.exceptions.HTTPError as e:
