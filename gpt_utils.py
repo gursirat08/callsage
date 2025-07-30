@@ -9,7 +9,7 @@ HEADERS = {
     "Content-Type": "application/json"
 }
 
-def call_model(prompt, model="claude-instant"):
+def call_model(prompt, model="openai/gpt-3.5-turbo"):
     try:
         data = {
             "model": model,
