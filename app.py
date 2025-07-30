@@ -7,6 +7,7 @@ import tempfile
 # Set up page
 st.set_page_config(page_title="CallSage - AI Call Analyzer", layout="centered")
 st.markdown("## 📞 CallSage: AI-Powered Call Analysis")
+st.caption(f"Running Streamlit v{st.__version__}")
 st.write("Upload a voice call recording to get a transcript, summary, sentiment, and key action points.")
 
 # Initialize database
@@ -36,28 +37,32 @@ if uploaded_file is not None:
             st.markdown("### 😊 Sentiment")
             st.info(sentiment)
 
-            st.markdown("###  Action Points")
+            st.markdown("### ✅ Action Points")
             st.markdown("\n".join([f"- {line}" for line in action_points.split("\n") if line.strip()]))
 
-            #  Save this call to history
+            # ✅ Save this call to history
             save_call(transcript, summary, sentiment, action_points, model_used)
 
         except Exception as e:
-            st.error(" Something went wrong while analyzing the transcript.")
+            st.error("❌ Something went wrong while analyzing the transcript.")
             st.exception(e)
 
-#  Call History Section in Sidebar
+# 📂 Call History Section in Sidebar
 st.sidebar.title("📂 Call History")
 
-#  Add Clear History button
+# 🧹 Clear Call History Button
 if st.sidebar.button("🗑 Clear Call History"):
     clear_all_calls()
-    st.sidebar.success("History cleared!")
-    st.experimental_rerun()
+    st.sidebar.success("Call history cleared!")
+    st.rerun()  # ✅ fixed the crash issue
 
-# Show previous calls
+# 📜 Show previous calls
 calls = get_all_calls()
-selected = st.sidebar.selectbox("View Previous Call:", calls, format_func=lambda x: f"{x[1][:19]} - {x[2][:40]}" if x else "None")
+selected = st.sidebar.selectbox(
+    "View Previous Call:",
+    calls,
+    format_func=lambda x: f"{x[1][:19]} - {x[2][:40]}" if x else "None"
+)
 
 if selected:
     call_id = selected[0]
@@ -73,4 +78,3 @@ if selected:
     st.subheader("✅ Action Points")
     st.write(call_data[5])
     st.caption(f"Model used: {call_data[6]}")
-
