@@ -28,7 +28,7 @@ def transcribe_audio(file_path):
         "Content-Type": "application/json"
     }
     payload = {
-        "version": "fdb6ac0bfa78e0f82f6e1c1e7185c29aa300b1f31fd640cfc3dc6f78df8fc00b",
+        "version": "8099696689d249cf8b122d833c36ac3f75505c666a395ca40ef26f68e7d3d16e",
         "input": {"audio": upload_url}
     }
 
