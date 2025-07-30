@@ -9,19 +9,24 @@ HEADERS = {
     "Content-Type": "application/json"
 }
 
-def call_model(prompt, model="anthropic/claude-instant-v1"
-):
+def call_model(prompt, model="anthropic/claude-instant-v1"):
     try:
         data = {
             "model": model,
             "messages": [{"role": "user", "content": prompt}]
         }
-        response = requests.post(OPENROUTER_URL, headers=HEADERS, json=data)
+        response = requests.post("https://openrouter.ai/api/v1/chat/completions", 
+                                 headers={
+                                     "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                                     "Content-Type": "application/json"
+                                 }, 
+                                 json=data)
         response.raise_for_status()
         return response.json()["choices"][0]["message"]["content"], model
     except requests.exceptions.HTTPError as e:
         st.error(f"GPT model API call failed: {e}")
         raise
+
 
 
 def analyze_transcript(transcript):
