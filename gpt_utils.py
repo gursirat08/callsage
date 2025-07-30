@@ -9,7 +9,7 @@ HEADERS = {
     "Content-Type": "application/json"
 }
 
-def call_model(prompt, model="anthropic/claude-instant-v1"):
+def call_model(prompt, model="claude-instant"):
     try:
         data = {
             "model": model,
@@ -28,6 +28,7 @@ def call_model(prompt, model="anthropic/claude-instant-v1"):
     except requests.exceptions.HTTPError as e:
         st.error(f"GPT model API call failed: {e}")
         raise
+
 
 def analyze_transcript(transcript):
     summary, model_used = call_model(
