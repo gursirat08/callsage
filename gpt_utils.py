@@ -22,15 +22,12 @@ def call_model(prompt, model="anthropic/claude-instant-v1"):
                                  }, 
                                  json=data)
         if not response.ok:
-    st.error(response.text)
-
+            st.error(response.text)
         response.raise_for_status()
         return response.json()["choices"][0]["message"]["content"], model
     except requests.exceptions.HTTPError as e:
         st.error(f"GPT model API call failed: {e}")
         raise
-
-
 
 def analyze_transcript(transcript):
     summary, model_used = call_model(
@@ -45,5 +42,3 @@ def analyze_transcript(transcript):
         model_used
     )
     return summary, sentiment, action_points, model_used.split("/")[-1]
-
-
