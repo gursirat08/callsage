@@ -4,18 +4,24 @@ import streamlit as st
 REPLICATE_API_TOKEN = st.secrets["REPLICATE_API_TOKEN"]
 
 def transcribe_audio(file_path):
-    # Step 1: Upload to transfer.sh and get public URL
+    # Step 1: Upload to tmpfiles.org
     with open(file_path, "rb") as f:
-        filename = file_path.split("/")[-1]
-        upload_resp = requests.put(f"https://transfer.sh/{filename}", data=f)
+        files = {"file": (file_path.split("/")[-1], f)}
+        upload_resp = requests.post("https://tmpfiles.org/api/v1/upload", files=files)
     if not upload_resp.ok:
-        st.error("File upload to transfer.sh failed.")
+        st.error("File upload to tmpfiles.org failed.")
         st.text(upload_resp.text)
         return "Upload failed."
 
-    upload_url = upload_resp.text.strip()
+    try:
+        file_info = upload_resp.json()
+        upload_url = "https://tmpfiles.org" + file_info["data"]["url"]
+    except Exception as e:
+        st.error("Upload response was not JSON.")
+        st.text(upload_resp.text)
+        return "Upload failed."
 
-    # Step 2: Send URL to Replicate Whisper API
+    # Step 2: Send to Replicate Whisper
     replicate_url = "https://api.replicate.com/v1/predictions"
     headers = {
         "Authorization": f"Token {REPLICATE_API_TOKEN}",
