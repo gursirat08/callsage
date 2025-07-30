@@ -9,7 +9,8 @@ HEADERS = {
     "Content-Type": "application/json"
 }
 
-def call_model(prompt, model="openrouter/gpt-4"):
+def call_model(prompt, model="anthropic/claude-instant-v1"
+):
     try:
         data = {
             "model": model,
