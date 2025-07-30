@@ -26,13 +26,16 @@ def call_model(prompt, model="openrouter/gpt-4"):
         return response.json()["choices"][0]["message"]["content"], fallback_model
 
 def analyze_transcript(transcript):
-    summary, model_used = call_model(f"Summarize the following conversation:
-
-{transcript}")
-    sentiment, _ = call_model(f"What is the sentiment of this conversation?
-
-{transcript}", model_used)
-    action_points, _ = call_model(f"List the key action items from this conversation:
-
-{transcript}", model_used)
+    summary, model_used = call_model(
+        f"Summarize the following conversation:\n\n{transcript}"
+    )
+    sentiment, _ = call_model(
+        f"What is the sentiment of this conversation?\n\n{transcript}",
+        model_used
+    )
+    action_points, _ = call_model(
+        f"List the key action items from this conversation:\n\n{transcript}",
+        model_used
+    )
     return summary, sentiment, action_points, model_used.split("/")[-1]
+
