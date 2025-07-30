@@ -16,6 +16,7 @@ init_db()
 # Upload audio file
 uploaded_file = st.file_uploader("🎧 Upload your audio file (.mp3 or .wav)", type=["mp3", "wav"])
 
+# If user uploads a new audio file
 if uploaded_file is not None:
     with tempfile.NamedTemporaryFile(delete=False, suffix=uploaded_file.name[-4:]) as tmp:
         tmp.write(uploaded_file.read())
@@ -47,34 +48,35 @@ if uploaded_file is not None:
             st.error("❌ Something went wrong while analyzing the transcript.")
             st.exception(e)
 
-# 📂 Call History Section in Sidebar
-st.sidebar.title("📂 Call History")
+# 📂 Call History Section — only when no file is uploaded
+else:
+    st.sidebar.title("📂 Call History")
 
-# 🧹 Clear Call History Button
-if st.sidebar.button("🗑 Clear Call History"):
-    clear_all_calls()
-    st.sidebar.success("Call history cleared!")
-    st.rerun()  # ✅ fixed the crash issue
+    # 🧹 Clear Call History Button
+    if st.sidebar.button("🗑 Clear Call History"):
+        clear_all_calls()
+        st.sidebar.success("Call history cleared!")
+        st.rerun()
 
-# 📜 Show previous calls
-calls = get_all_calls()
-selected = st.sidebar.selectbox(
-    "View Previous Call:",
-    calls,
-    format_func=lambda x: f"{x[1][:19]} - {x[2][:40]}" if x else "None"
-)
+    # 📜 Show previous calls
+    calls = get_all_calls()
+    selected = st.sidebar.selectbox(
+        "View Previous Call:",
+        calls,
+        format_func=lambda x: f"{x[1][:19]} - {x[2][:40]}" if x else "None"
+    )
 
-if selected:
-    call_id = selected[0]
-    call_data = get_call_by_id(call_id)
-    st.subheader("🕘 Timestamp")
-    st.write(call_data[1])
-    st.subheader("📄 Transcript")
-    st.text_area("Transcript", call_data[2], height=200)
-    st.subheader("📌 Summary")
-    st.write(call_data[3])
-    st.subheader("😊 Sentiment")
-    st.write(call_data[4])
-    st.subheader("✅ Action Points")
-    st.write(call_data[5])
-    st.caption(f"Model used: {call_data[6]}")
+    if selected:
+        call_id = selected[0]
+        call_data = get_call_by_id(call_id)
+        st.subheader("🕘 Timestamp")
+        st.write(call_data[1])
+        st.subheader("📄 Transcript")
+        st.text_area("Transcript", call_data[2], height=200)
+        st.subheader("📌 Summary")
+        st.write(call_data[3])
+        st.subheader("😊 Sentiment")
+        st.write(call_data[4])
+        st.subheader("✅ Action Points")
+        st.write(call_data[5])
+        st.caption(f"Model used: {call_data[6]}")
