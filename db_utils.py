@@ -51,3 +51,11 @@ def get_call_by_id(call_id):
     row = cursor.fetchone()
     conn.close()
     return row
+
+#  NEW: Clear all call history
+def clear_all_calls():
+    conn = sqlite3.connect("calls.db")
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM call_history")
+    conn.commit()
+    conn.close()
