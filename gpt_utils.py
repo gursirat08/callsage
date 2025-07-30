@@ -18,12 +18,10 @@ def call_model(prompt, model="openrouter/gpt-4"):
         response = requests.post(OPENROUTER_URL, headers=HEADERS, json=data)
         response.raise_for_status()
         return response.json()["choices"][0]["message"]["content"], model
-    except:
-        fallback_model = "openrouter/claude-instant-v1"
-        data["model"] = fallback_model
-        response = requests.post(OPENROUTER_URL, headers=HEADERS, json=data)
-        response.raise_for_status()
-        return response.json()["choices"][0]["message"]["content"], fallback_model
+    except requests.exceptions.HTTPError as e:
+        st.error(f"GPT model API call failed: {e}")
+        raise
+
 
 def analyze_transcript(transcript):
     summary, model_used = call_model(
