@@ -1,7 +1,7 @@
 import streamlit as st
 from whisper_api import transcribe_audio
 from gpt_utils import analyze_transcript
-from db_utils import init_db, save_call, get_all_calls, get_call_by_id
+from db_utils import init_db, save_call, get_all_calls, get_call_by_id, clear_all_calls
 import tempfile
 
 # Set up page
@@ -36,18 +36,26 @@ if uploaded_file is not None:
             st.markdown("### 😊 Sentiment")
             st.info(sentiment)
 
-            st.markdown("### ✅ Action Points")
+            st.markdown("###  Action Points")
             st.markdown("\n".join([f"- {line}" for line in action_points.split("\n") if line.strip()]))
 
-            # ✅ Save this call to history
+            #  Save this call to history
             save_call(transcript, summary, sentiment, action_points, model_used)
 
         except Exception as e:
-            st.error("❌ Something went wrong while analyzing the transcript.")
+            st.error(" Something went wrong while analyzing the transcript.")
             st.exception(e)
 
-# 📂 Call History Section in Sidebar
+#  Call History Section in Sidebar
 st.sidebar.title("📂 Call History")
+
+#  Add Clear History button
+if st.sidebar.button("🗑 Clear Call History"):
+    clear_all_calls()
+    st.sidebar.success("History cleared!")
+    st.experimental_rerun()
+
+# Show previous calls
 calls = get_all_calls()
 selected = st.sidebar.selectbox("View Previous Call:", calls, format_func=lambda x: f"{x[1][:19]} - {x[2][:40]}" if x else "None")
 
@@ -65,3 +73,4 @@ if selected:
     st.subheader("✅ Action Points")
     st.write(call_data[5])
     st.caption(f"Model used: {call_data[6]}")
+
