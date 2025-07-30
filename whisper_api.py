@@ -14,5 +14,11 @@ def transcribe_audio(file_path):
             "Authorization": f"Bearer {OPENAI_API_KEY}"
         }
         response = requests.post("https://api.openai.com/v1/audio/transcriptions", headers=headers, files=files)
-        response.raise_for_status()
+
+        # DEBUG: Print full response for debugging
+        if not response.ok:
+            st.error("OpenAI Whisper API call failed.")
+            st.code(response.text)  # <-- shows the actual error details from OpenAI
+            return "Transcription failed."
+
         return response.json().get("text", "Transcription failed.")
